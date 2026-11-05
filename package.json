@@ -1,0 +1,21 @@
+{
+  "name": "canvas-superproductivity",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Super Productivity plugin that syncs Canvas assignments from the Canvas Calendar Feed",
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/",
+    "build:site": "node build.mjs site",
+    "check:site": "node build.mjs site --check"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "homepage": "https://YOUR-GITHUB-USERNAME.github.io/canvas-superproductivity/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YOUR-GITHUB-USERNAME/canvas-superproductivity.git"
+  },
+  "license": "MIT"
+}

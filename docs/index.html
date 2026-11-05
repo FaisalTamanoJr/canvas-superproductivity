@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Canvas Plugin Maker</title>
+    <meta
+      name="description"
+      content="Make the Canvas Assignment Sync plugin for Super Productivity, set up for your school."
+    />
+    <style>
+      :root {
+        --bg: #f6f7f9;
+        --card: #ffffff;
+        --text: #1d2330;
+        --muted: #5b6475;
+        --border: #dfe3ea;
+        --accent: #2f6fde;
+        --accent-text: #ffffff;
+        --ok: #1f7a3a;
+        --err: #b3261e;
+        --code-bg: #eef1f6;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #14171d;
+          --card: #1c2028;
+          --text: #e6e9ef;
+          --muted: #a0a8b8;
+          --border: #2e3440;
+          --accent: #6f9df2;
+          --accent-text: #0d1220;
+          --ok: #6fcf8a;
+          --err: #f2857c;
+          --code-bg: #262b35;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font: 16px/1.55 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      }
+      main {
+        max-width: 640px;
+        margin: 0 auto;
+        padding: 40px 16px 64px;
+      }
+      h1 {
+        font-size: 1.7rem;
+        line-height: 1.25;
+        margin: 0 0 8px;
+      }
+      .lead {
+        color: var(--muted);
+        margin: 0 0 28px;
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+      }
+      h2 {
+        font-size: 1.05rem;
+        margin: 0 0 12px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      .num {
+        flex: none;
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: var(--accent);
+        color: var(--accent-text);
+        font-size: 0.85rem;
+        display: grid;
+        place-items: center;
+      }
+      ol {
+        margin: 0;
+        padding-left: 22px;
+      }
+      li {
+        margin-bottom: 6px;
+      }
+      label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 6px;
+      }
+      input {
+        width: 100%;
+        font: inherit;
+        padding: 10px 12px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: var(--bg);
+        color: var(--text);
+      }
+      input:focus {
+        outline: 2px solid var(--accent);
+        outline-offset: 1px;
+      }
+      button {
+        margin-top: 12px;
+        font: inherit;
+        font-weight: 600;
+        padding: 10px 18px;
+        border: 0;
+        border-radius: 8px;
+        background: var(--accent);
+        color: var(--accent-text);
+        cursor: pointer;
+      }
+      button:hover {
+        filter: brightness(1.08);
+      }
+      .hint,
+      .note {
+        color: var(--muted);
+        font-size: 0.9rem;
+        margin: 8px 0 0;
+      }
+      .result {
+        margin-top: 14px;
+        font-weight: 600;
+        min-height: 1.5em;
+      }
+      .result.ok {
+        color: var(--ok);
+      }
+      .result.err {
+        color: var(--err);
+      }
+      code {
+        background: var(--code-bg);
+        padding: 1px 6px;
+        border-radius: 4px;
+        font-size: 0.92em;
+        overflow-wrap: anywhere;
+      }
+      footer {
+        color: var(--muted);
+        font-size: 0.85rem;
+        text-align: center;
+      }
+      a {
+        color: var(--accent);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Canvas → Super Productivity</h1>
+      <p class="lead">
+        Make the Canvas Assignment Sync plugin for your school. It copies your Canvas
+        assignments into Super Productivity as tasks, with deadlines and reminders.
+      </p>
+
+      <section class="card">
+        <h2><span class="num">1</span> Copy your Calendar Feed link</h2>
+        <ol>
+          <li>Open Canvas and click <b>Calendar</b> in the left menu.</li>
+          <li>Click <b>Calendar Feed</b>, at the bottom of the right side.</li>
+          <li>Copy the link it shows.</li>
+        </ol>
+      </section>
+
+      <section class="card">
+        <h2><span class="num">2</span> Make your plugin</h2>
+        <form id="form">
+          <label for="link">Calendar Feed link</label>
+          <input
+            id="link"
+            type="text"
+            inputmode="url"
+            autocomplete="off"
+            spellcheck="false"
+            placeholder="https://canvas.myschool.edu/feeds/calendars/user_….ics"
+          />
+          <p class="hint">
+            Your Canvas address (like <code>canvas.myschool.edu</code>) works too.
+          </p>
+          <button type="submit">Download plugin</button>
+          <p class="result" id="result" role="status"></p>
+        </form>
+        <p class="note">
+          This page runs entirely in your browser. Your link is not sent or saved: only the
+          address of your school's Canvas goes into the plugin file.
+        </p>
+      </section>
+
+      <section class="card">
+        <h2><span class="num">3</span> Install it</h2>
+        <ol>
+          <li>Open the Super Productivity desktop app and go to <b>Settings → Plugins</b>.</li>
+          <li>
+            Under <b>Install Plugin</b>, click <b>Choose Plugin File</b>, pick the file you just
+            downloaded, and confirm.
+          </li>
+          <li>
+            Open <b>Canvas Assignment Sync</b> in the left menu, paste your Calendar Feed link
+            again, and click <b>Save link &amp; sync</b>.
+          </li>
+        </ol>
+      </section>
+
+      <footer>Canvas Assignment Sync v1.0.0</footer>
+    </main>
+
+    <script id="core">
+      // Shared by build.mjs (Node) and the zip-maker page (browser).
+// build.mjs inlines this file into docs/index.html with `export` removed, so
+// keep it dependency-free and limited to plain function declarations.
+
+const HOST_PLACEHOLDER = '__CANVAS_HOST__';
+
+/**
+ * Accepts a Canvas Calendar Feed link, any Canvas page link, or a bare
+ * address ("canvas.myschool.edu") and returns just the hostname.
+ * Throws an Error with a student-friendly message otherwise.
+ */
+function parseCanvasHost(input) {
+  let value = String(input || '').trim();
+  if (!value) throw new Error('Paste your Calendar Feed link or type your Canvas address.');
+  value = value.replace(/^webcals?:\/\//i, 'https://');
+  if (!/^[a-z][a-z0-9+.-]*:\/\//i.test(value)) value = 'https://' + value;
+  let host;
+  try {
+    host = new URL(value).hostname;
+  } catch (_e) {
+    throw new Error('That does not look like a web address.');
+  }
+  host = host.toLowerCase().replace(/\.$/, '');
+  const isHostname =
+    host.length <= 253 &&
+    /^([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$/.test(host);
+  if (!isHostname) {
+    throw new Error('That does not look like a Canvas address (e.g. canvas.myschool.edu).');
+  }
+  return host;
+}
+
+let crcTable = null;
+function crc32(bytes) {
+  if (!crcTable) {
+    crcTable = new Uint32Array(256);
+    for (let n = 0; n < 256; n++) {
+      let c = n;
+      for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
+      crcTable[n] = c >>> 0;
+    }
+  }
+  let crc = 0xffffffff;
+  for (let i = 0; i < bytes.length; i++) crc = crcTable[(crc ^ bytes[i]) & 0xff] ^ (crc >>> 8);
+  return (crc ^ 0xffffffff) >>> 0;
+}
+
+/**
+ * Minimal ZIP writer (stored entries, no compression). Files land at the zip
+ * root, which is what Super Productivity's plugin upload expects.
+ * @param {{name: string, text: string}[]} files
+ * @returns {Uint8Array}
+ */
+function createZip(files) {
+  const enc = new TextEncoder();
+  // Fixed timestamp (2026-01-01 00:00) so identical input gives identical zips.
+  const dosTime = 0;
+  const dosDate = ((2026 - 1980) << 9) | (1 << 5) | 1;
+  const locals = [];
+  const centrals = [];
+  let offset = 0;
+
+  for (const file of files) {
+    const name = enc.encode(file.name);
+    const data = enc.encode(file.text);
+    const crc = crc32(data);
+
+    const local = new Uint8Array(30 + name.length + data.length);
+    const lv = new DataView(local.buffer);
+    lv.setUint32(0, 0x04034b50, true);
+    lv.setUint16(4, 20, true); // version needed
+    lv.setUint16(6, 0x0800, true); // UTF-8 names
+    lv.setUint16(8, 0, true); // stored
+    lv.setUint16(10, dosTime, true);
+    lv.setUint16(12, dosDate, true);
+    lv.setUint32(14, crc, true);
+    lv.setUint32(18, data.length, true);
+    lv.setUint32(22, data.length, true);
+    lv.setUint16(26, name.length, true);
+    lv.setUint16(28, 0, true);
+    local.set(name, 30);
+    local.set(data, 30 + name.length);
+    locals.push(local);
+
+    const central = new Uint8Array(46 + name.length);
+    const cv = new DataView(central.buffer);
+    cv.setUint32(0, 0x02014b50, true);
+    cv.setUint16(4, 20, true); // version made by
+    cv.setUint16(6, 20, true); // version needed
+    cv.setUint16(8, 0x0800, true);
+    cv.setUint16(10, 0, true);
+    cv.setUint16(12, dosTime, true);
+    cv.setUint16(14, dosDate, true);
+    cv.setUint32(16, crc, true);
+    cv.setUint32(20, data.length, true);
+    cv.setUint32(24, data.length, true);
+    cv.setUint16(28, name.length, true);
+    cv.setUint32(42, offset, true);
+    central.set(name, 46);
+    centrals.push(central);
+
+    offset += local.length;
+  }
+
+  const centralSize = centrals.reduce((n, c) => n + c.length, 0);
+  const end = new Uint8Array(22);
+  const ev = new DataView(end.buffer);
+  ev.setUint32(0, 0x06054b50, true);
+  ev.setUint16(8, files.length, true);
+  ev.setUint16(10, files.length, true);
+  ev.setUint32(12, centralSize, true);
+  ev.setUint32(16, offset, true);
+
+  const out = new Uint8Array(offset + centralSize + end.length);
+  let pos = 0;
+  for (const part of [...locals, ...centrals, end]) {
+    out.set(part, pos);
+    pos += part.length;
+  }
+  return out;
+}
+
+/**
+ * Puts the Canvas host into the plugin files and zips them.
+ * @param {{name: string, text: string}[]} templateFiles
+ */
+function buildPluginZip(templateFiles, host) {
+  const files = templateFiles.map((f) => ({
+    name: f.name,
+    text: f.text.split(HOST_PLACEHOLDER).join(host),
+  }));
+  const manifest = JSON.parse(files.find((f) => f.name === 'manifest.json').text);
+  if (!manifest.allowedHosts || manifest.allowedHosts.join() !== host) {
+    throw new Error('Could not set the Canvas address in the plugin.');
+  }
+  return createZip(files);
+}
+      const PLUGIN_FILES = [{"name":"manifest.json","text":"{\n  \"id\": \"canvas-assignment-sync\",\n  \"manifestVersion\": 1,\n  \"name\": \"Canvas Assignment Sync\",\n  \"version\": \"1.0.0\",\n  \"minSupVersion\": \"19.0.0\",\n  \"description\": \"Imports Canvas assignments from your Canvas Calendar Feed: one project per course, one task per assignment, with the due date as deadline and a reminder before it.\",\n  \"author\": \"\",\n  \"hooks\": [],\n  \"permissions\": [\n    \"http\",\n    \"getTasks\",\n    \"getArchivedTasks\",\n    \"addTask\",\n    \"updateTask\",\n    \"getAllProjects\",\n    \"addProject\",\n    \"persistDataSynced\",\n    \"loadSyncedData\",\n    \"onMessage\",\n    \"showSnack\"\n  ],\n  \"allowedHosts\": [\"__CANVAS_HOST__\"],\n  \"iFrame\": true,\n  \"isSkipMenuEntry\": false,\n  \"type\": \"standard\",\n  \"icon\": \"icon.svg\"\n}\n"},{"name":"plugin.js","text":"// Canvas Assignment Sync — Super Productivity plugin\n//\n// Reads the Canvas Calendar Feed (.ics) and mirrors every assignment into\n// Super Productivity: one project per course, one task per assignment, with\n// the Canvas due date as the task's deadline and a deadline reminder N days\n// before it.\n//\n// Rules the sync follows so it never fights the user:\n//   * A task you mark done, archive or delete is never reopened or recreated.\n//   * A title or note you edit yourself is never overwritten.\n//   * A reminder you snooze or dismiss is never reset — unless Canvas moves the\n//     due date, in which case the deadline and its reminder are re-planned.\n//   * A course whose project you archive or delete stops syncing (you can\n//     resume it from the plugin page).\n\nconst CANVAS_HOST = '__CANVAS_HOST__';\n\nconst STATE_KEY = 'state';\nconst SETTINGS_KEY = 'settings';\nconst SECRET_FEED_URL = 'feedUrl';\n// Tasks are created with a neutral title first and renamed in a multi-field\n// update: Super Productivity parses \"short syntax\" (#tag, +project, @date, 30m)\n// out of new task titles, which would mangle titles like \"Lab #3\".\nconst PLACEHOLDER_TITLE = 'Canvas assignment';\nconst LATE_REMINDER_DELAY_MS = 60 * 1000;\nconst MAX_DESCRIPTION_CHARS = 1500;\n\nconst DEFAULT_SETTINGS = {\n  remindersEnabled: true,\n  reminderDaysBefore: 3,\n  syncIntervalMin: 60,\n  skipPastDue: true,\n};\n\n// ---------------------------------------------------------------------------\n// ICS parsing\n// ---------------------------------------------------------------------------\n\nconst unfoldIcs = (text) =>\n  String(text)\n    .replace(/\\r\\n?/g, '\\n')\n    .replace(/\\n[ \\t]/g, '');\n\nconst unescapeIcsText = (value) =>\n  value.replace(/\\\\([nN,;\\\\])/g, (_m, c) => (c === 'n' || c === 'N' ? '\\n' : c));\n\n/** Splits \"NAME;P1=a;P2=\\\"x:y\\\":value\" at the first colon outside quotes. */\nconst parseIcsLine = (line) => {\n  let inQuotes = false;\n  let colon = -1;\n  for (let i = 0; i \u003c line.length; i++) {\n    const ch = line[i];\n    if (ch === '\"') inQuotes = !inQuotes;\n    else if (ch === ':' && !inQuotes) {\n      colon = i;\n      break;\n    }\n  }\n  if (colon === -1) return null;\n  const head = line.slice(0, colon);\n  const value = line.slice(colon + 1);\n  const [rawName, ...rawParams] = head.split(';');\n  const params = {};\n  for (const p of rawParams) {\n    const eq = p.indexOf('=');\n    if (eq === -1) continue;\n    params[p.slice(0, eq).toUpperCase()] = p.slice(eq + 1).replace(/^\"|\"$/g, '');\n  }\n  return { name: rawName.toUpperCase(), params, value };\n};\n\nconst parseIcs = (text) => {\n  const events = [];\n  let current = null;\n  let nestedDepth = 0; // VALARM etc. inside a VEVENT\n  for (const line of unfoldIcs(text).split('\\n')) {\n    if (!line) continue;\n    if (line === 'BEGIN:VEVENT') {\n      current = {};\n      nestedDepth = 0;\n      continue;\n    }\n    if (line === 'END:VEVENT') {\n      if (current) events.push(current);\n      current = null;\n      continue;\n    }\n    if (!current) continue;\n    if (line.startsWith('BEGIN:')) {\n      nestedDepth++;\n      continue;\n    }\n    if (line.startsWith('END:')) {\n      nestedDepth = Math.max(0, nestedDepth - 1);\n      continue;\n    }\n    if (nestedDepth > 0) continue;\n    const prop = parseIcsLine(line);\n    if (prop && !(prop.name in current)) current[prop.name] = prop;\n  }\n  return events;\n};\n\n/** Offset (ms) of `timeZone` from UTC at instant `ts`. */\nconst getTzOffsetMs = (ts, timeZone) => {\n  const dtf = new Intl.DateTimeFormat('en-US', {\n    timeZone,\n    hourCycle: 'h23',\n    year: 'numeric',\n    month: '2-digit',\n    day: '2-digit',\n    hour: '2-digit',\n    minute: '2-digit',\n    second: '2-digit',\n  });\n  const parts = {};\n  for (const { type, value } of dtf.formatToParts(new Date(ts))) parts[type] = value;\n  const asUtc = Date.UTC(\n    +parts.year,\n    +parts.month - 1,\n    +parts.day,\n    +parts.hour,\n    +parts.minute,\n    +parts.second,\n  );\n  return asUtc - Math.floor(ts / 1000) * 1000;\n};\n\nconst zonedTimeToUtc = (y, mo, d, h, mi, s, timeZone) => {\n  const guess = Date.UTC(y, mo - 1, d, h, mi, s);\n  const off1 = getTzOffsetMs(guess, timeZone);\n  const t = guess - off1;\n  const off2 = getTzOffsetMs(t, timeZone);\n  return off2 === off1 ? t : guess - off2;\n};\n\n/**\n * Returns { ms, isAllDay } for a DTSTART/DUE property, or null.\n * Canvas writes assignments due at 11:59 PM as all-day (date-only) events, so\n * a date-only value means \"due at 23:59 local time on that day\".\n */\nconst parseIcsDate = (prop) => {\n  if (!prop || !prop.value) return null;\n  const v = prop.value.trim();\n  const dateOnly = /^(\\d{4})(\\d{2})(\\d{2})$/.exec(v);\n  if (dateOnly) {\n    const [, y, mo, d] = dateOnly.map(Number);\n    return { ms: new Date(y, mo - 1, d, 23, 59, 0, 0).getTime(), isAllDay: true };\n  }\n  const dt = /^(\\d{4})(\\d{2})(\\d{2})T(\\d{2})(\\d{2})(\\d{2})(Z?)$/.exec(v);\n  if (!dt) return null;\n  const [y, mo, d, h, mi, s] = dt.slice(1, 7).map(Number);\n  if (dt[7] === 'Z') return { ms: Date.UTC(y, mo - 1, d, h, mi, s), isAllDay: false };\n  const tzid = prop.params && prop.params.TZID;\n  if (tzid) {\n    try {\n      return { ms: zonedTimeToUtc(y, mo, d, h, mi, s, tzid), isAllDay: false };\n    } catch (_e) {\n      // Unknown time zone name: fall back to local time below.\n    }\n  }\n  return { ms: new Date(y, mo - 1, d, h, mi, s).getTime(), isAllDay: false };\n};\n\n/** Maps one VEVENT to an assignment, or null for non-assignment events. */\nconst toAssignment = (ev, host) => {\n  const uid = ev.UID ? ev.UID.value.trim() : '';\n  const url = ev.URL ? ev.URL.value.trim() : '';\n  const uidMatch = /^event-(?:sub-assignment|assignment-override|assignment)-(\\d+)/.exec(uid);\n  const urlMatch = /#assignment_(\\d+)/.exec(url);\n  if (!uid || (!uidMatch && !urlMatch)) return null;\n\n  const due = parseIcsDate(ev.DTSTART) || parseIcsDate(ev.DUE) || parseIcsDate(ev.DTEND);\n  if (!due) return null;\n\n  const summary = ev.SUMMARY ? unescapeIcsText(ev.SUMMARY.value).trim() : '';\n  const bracket = /^(.*?)\\s*\\[([^\\[\\]]+)\\]\\s*$/.exec(summary);\n  const title = (bracket ? bracket[1] : summary).trim() || 'Untitled assignment';\n  const courseLabel = bracket ? bracket[2].trim() : '';\n\n  const courseIdMatch = /include_contexts=course_(\\d+)/.exec(url);\n  const courseId = courseIdMatch ? courseIdMatch[1] : null;\n  const assignmentId = urlMatch ? urlMatch[1] : uidMatch[1];\n  const courseKey = courseId\n    ? `course_${courseId}`\n    : courseLabel\n      ? `label:${courseLabel.toLowerCase()}`\n      : 'unknown';\n\n  const link =\n    courseId && assignmentId\n      ? `https://${host}/courses/${courseId}/assignments/${assignmentId}`\n      : url || null;\n\n  let description = ev.DESCRIPTION ? unescapeIcsText(ev.DESCRIPTION.value).trim() : '';\n  if (description.length > MAX_DESCRIPTION_CHARS) {\n    description = description.slice(0, MAX_DESCRIPTION_CHARS).trimEnd() + '…';\n  }\n\n  return {\n    uid,\n    assignmentId,\n    courseId,\n    courseKey,\n    courseLabel: courseLabel || 'Canvas',\n    title,\n    dueMs: due.ms,\n    isAllDay: due.isAllDay,\n    link,\n    description,\n  };\n};\n\n// ---------------------------------------------------------------------------\n// Helpers\n// ---------------------------------------------------------------------------\n\nconst hashString = (str) => {\n  let h = 5381;\n  const s = String(str || '');\n  for (let i = 0; i \u003c s.length; i++) h = ((h \u003c\u003c 5) + h + s.charCodeAt(i)) | 0;\n  return (h >>> 0).toString(36);\n};\n\nconst clampInt = (value, min, max, fallback) => {\n  const n = Math.round(Number(value));\n  if (!Number.isFinite(n)) return fallback;\n  return Math.min(max, Math.max(min, n));\n};\n\nconst sanitizeSettings = (raw) => {\n  const s = raw && typeof raw === 'object' ? raw : {};\n  return {\n    remindersEnabled:\n      typeof s.remindersEnabled === 'boolean'\n        ? s.remindersEnabled\n        : DEFAULT_SETTINGS.remindersEnabled,\n    reminderDaysBefore: clampInt(\n      s.reminderDaysBefore,\n      0,\n      30,\n      DEFAULT_SETTINGS.reminderDaysBefore,\n    ),\n    syncIntervalMin: clampInt(s.syncIntervalMin, 15, 1440, DEFAULT_SETTINGS.syncIntervalMin),\n    skipPastDue:\n      typeof s.skipPastDue === 'boolean' ? s.skipPastDue : DEFAULT_SETTINGS.skipPastDue,\n  };\n};\n\nconst reminderCfgKey = (settings) =>\n  settings.remindersEnabled ? `d${settings.reminderDaysBefore}` : 'off';\n\n/**\n * When the deadline reminder should fire. Past reminder times return null,\n * or \"in a minute\" when `allowLate` (an assignment that shows up, or moves,\n * inside the reminder window still gets a heads-up while it is not yet due).\n */\nconst computeRemindAt = (dueMs, settings, now, allowLate) => {\n  if (!settings.remindersEnabled) return null;\n  const d = new Date(dueMs);\n  d.setDate(d.getDate() - settings.reminderDaysBefore); // calendar days, DST-safe\n  const remindAt = d.getTime();\n  if (remindAt > now) return remindAt;\n  if (allowLate && dueMs > now) return now + LATE_REMINDER_DELAY_MS;\n  return null;\n};\n\nconst formatDue = (a) => {\n  try {\n    if (typeof PluginAPI.formatDate === 'function') {\n      return PluginAPI.formatDate(a.dueMs, 'datetime');\n    }\n  } catch (_e) {\n    // fall through\n  }\n  return new Date(a.dueMs).toLocaleString();\n};\n\nconst buildNotes = (a) => {\n  const lines = [`**Course:** ${a.courseLabel}`, `**Due:** ${formatDue(a)}`];\n  if (a.link) lines.push(`[Open in Canvas](${a.link})`);\n  if (a.description) lines.push('', '---', '', a.description);\n  return lines.join('\\n');\n};\n\nconst normalizeTitle = (t) => String(t || '').trim().toLowerCase();\n\nconst errMsg = (e) => (e && e.message ? e.message : String(e));\n\n/** Accepts https:// or webcal:// Canvas feed links on the host this build allows. */\nconst normalizeFeedUrl = (raw) => {\n  let u;\n  try {\n    u = new URL(String(raw || '').trim().replace(/^webcals?:\\/\\//i, 'https://'));\n  } catch (_e) {\n    throw new Error('That is not a valid link. Paste the Calendar Feed link from Canvas.');\n  }\n  if (u.protocol !== 'https:') {\n    throw new Error('The Calendar Feed link must start with https://');\n  }\n  if (!/\\/feeds\\/calendars\\/[^/]+\\.ics$/i.test(u.pathname)) {\n    throw new Error(\n      'That does not look like a Canvas Calendar Feed link (…/feeds/calendars/….ics). ' +\n        'In Canvas open Calendar → \"Calendar Feed\" and copy that link.',\n    );\n  }\n  if (u.hostname.toLowerCase() !== CANVAS_HOST.toLowerCase()) {\n    throw new Error(\n      `This plugin was made for ${CANVAS_HOST}, but your link is on ${u.hostname}. ` +\n        `Make a new plugin with this link on the Canvas Plugin Maker page and install that one.`,\n    );\n  }\n  return u.toString();\n};\n\nconst maskFeedUrl = (url) => {\n  try {\n    const u = new URL(url);\n    const file = u.pathname.split('/').pop() || '';\n    const tail = file.replace(/\\.ics$/i, '').slice(-4);\n    return `https://${u.hostname}/feeds/calendars/••••${tail}.ics`;\n  } catch (_e) {\n    return '(saved)';\n  }\n};\n\n// ---------------------------------------------------------------------------\n// Persistence\n// ---------------------------------------------------------------------------\n\nconst loadJson = async (key, fallback) => {\n  try {\n    const raw = await PluginAPI.loadSyncedData(key);\n    if (!raw) return fallback;\n    const parsed = JSON.parse(raw);\n    return parsed && typeof parsed === 'object' ? parsed : fallback;\n  } catch (e) {\n    PluginAPI.log.warn('[canvas-sync] Could not read stored data', key, errMsg(e));\n    return fallback;\n  }\n};\n\nconst loadSettings = async () => sanitizeSettings(await loadJson(SETTINGS_KEY, {}));\n\nconst loadState = async () => {\n  const s = await loadJson(STATE_KEY, {});\n  return {\n    version: 1,\n    courses: s.courses && typeof s.courses === 'object' ? s.courses : {},\n    assignments: s.assignments && typeof s.assignments === 'object' ? s.assignments : {},\n    lastSync: s.lastSync || null,\n    lastSuccessAt: s.lastSuccessAt || null,\n  };\n};\n\nconst saveState = (state) => PluginAPI.persistDataSynced(JSON.stringify(state), STATE_KEY);\n\n// ---------------------------------------------------------------------------\n// Sync\n// ---------------------------------------------------------------------------\n\nconst fetchFeed = async (feedUrl) => {\n  let text;\n  try {\n    text = await PluginAPI.request(feedUrl, { responseType: 'text', timeout: 30000 });\n  } catch (e) {\n    const msg = errMsg(e);\n    if (/redirect/i.test(msg)) {\n      throw new Error(\n        'Canvas redirected the feed request, which plugins may not follow. ' +\n          'Open the feed link in your browser and paste the final address. (' +\n          msg +\n          ')',\n      );\n    }\n    throw new Error('Could not download the Calendar Feed: ' + msg);\n  }\n  if (typeof text !== 'string' || !text.includes('BEGIN:VCALENDAR')) {\n    throw new Error(\n      'Canvas did not return a calendar. The feed link may have been reset — copy it again from Canvas.',\n    );\n  }\n  return text;\n};\n\nconst deadlineChanges = (dueMs, remindAt) => ({\n  deadlineWithTime: dueMs,\n  deadlineDay: null,\n  deadlineRemindAt: remindAt,\n});\n\nconst runSync = async () => {\n  const settings = await loadSettings();\n  const state = await loadState();\n  const now = Date.now();\n  const counts = {\n    found: 0,\n    created: 0,\n    updated: 0,\n    skippedPastDue: 0,\n    projectsCreated: 0,\n    errors: 0,\n  };\n\n  const finish = async (ok, message) => {\n    state.lastSync = { at: Date.now(), ok, message, counts };\n    if (ok) state.lastSuccessAt = state.lastSync.at;\n    await saveState(state);\n    return state.lastSync;\n  };\n\n  const feedUrl = await PluginAPI.getSecret(SECRET_FEED_URL);\n  if (!feedUrl) {\n    return finish(false, 'Not set up yet: paste your Canvas Calendar Feed link.');\n  }\n\n  let assignments;\n  try {\n    const normalized = normalizeFeedUrl(feedUrl);\n    const host = new URL(normalized).hostname;\n    const text = await fetchFeed(normalized);\n    const seen = new Set();\n    assignments = parseIcs(text)\n      .map((ev) => toAssignment(ev, host))\n      .filter((a) => a && !seen.has(a.uid) && seen.add(a.uid));\n  } catch (e) {\n    return finish(false, errMsg(e));\n  }\n  counts.found = assignments.length;\n\n  const isInitialSync = !state.lastSuccessAt;\n  const remindCfg = reminderCfgKey(settings);\n\n  const [projects, activeTasks, archivedTasks] = await Promise.all([\n    PluginAPI.getAllProjects(),\n    PluginAPI.getTasks(),\n    PluginAPI.getArchivedTasks().catch(() => []),\n  ]);\n  const projectById = new Map(projects.filter((p) => !p.isArchived).map((p) => [p.id, p]));\n  const taskById = new Map();\n  for (const t of activeTasks) taskById.set(t.id, t);\n  const archivedIds = new Set();\n  for (const t of archivedTasks) {\n    archivedIds.add(t.id);\n    if (!taskById.has(t.id)) taskById.set(t.id, t);\n  }\n  const linkedTaskIds = new Set(\n    Object.values(state.assignments)\n      .filter((r) => r && r.taskId)\n      .map((r) => r.taskId),\n  );\n\n  const resolveProjectId = async (a) => {\n    const course = state.courses[a.courseKey];\n    if (course && course.status === 'ignored') return null;\n    if (course && course.projectId) {\n      if (projectById.has(course.projectId)) {\n        course.label = a.courseLabel;\n        return course.projectId;\n      }\n      // The project was archived or deleted: treat that as \"stop syncing\".\n      course.status = 'ignored';\n      course.reason = 'project-removed';\n      return null;\n    }\n    const existing = [...projectById.values()].find(\n      (p) => normalizeTitle(p.title) === normalizeTitle(a.courseLabel),\n    );\n    let projectId;\n    if (existing) {\n      projectId = existing.id;\n    } else {\n      projectId = await PluginAPI.addProject({ title: a.courseLabel, icon: 'school' });\n      projectById.set(projectId, { id: projectId, title: a.courseLabel });\n      counts.projectsCreated++;\n    }\n    state.courses[a.courseKey] = { projectId, label: a.courseLabel, status: 'active' };\n    return projectId;\n  };\n\n  const findTaskByMarker = (a) => {\n    if (!a.assignmentId) return null;\n    const marker = new RegExp(`/assignments/${a.assignmentId}(?!\\\\d)`);\n    for (const t of taskById.values()) {\n      if (!linkedTaskIds.has(t.id) && t.notes && marker.test(t.notes)) return t;\n    }\n    return null;\n  };\n\n  const updateLinked = async (a, rec) => {\n    const task = taskById.get(rec.taskId);\n    if (!task) {\n      rec.status = 'deleted'; // the user deleted it: never recreate\n      return;\n    }\n    if (task.isDone || archivedIds.has(task.id)) return;\n\n    const changes = {};\n    const currentRemindAt = task.deadlineRemindAt ?? null;\n    const isDueChanged = a.dueMs !== rec.dueMs;\n    if (isDueChanged) {\n      Object.assign(changes, deadlineChanges(a.dueMs, computeRemindAt(a.dueMs, settings, now, true)));\n    } else if (rec.remindCfg !== remindCfg && currentRemindAt === (rec.remindAt ?? null)) {\n      // Reminder settings changed and the user has not touched this reminder.\n      const next = computeRemindAt(a.dueMs, settings, now, false);\n      if (next !== currentRemindAt) changes.deadlineRemindAt = next;\n    }\n    if (a.title !== rec.title && task.title === rec.title) changes.title = a.title;\n    const notes = buildNotes(a);\n    if (hashString(notes) !== rec.notesHash && hashString(task.notes || '') === rec.notesHash) {\n      changes.notes = notes;\n    }\n    // Never send a title-only change: that would trigger short-syntax parsing.\n    if (Object.keys(changes).length === 1 && 'title' in changes) {\n      changes.notes = task.notes || '';\n    }\n\n    if (Object.keys(changes).length > 0) {\n      await PluginAPI.updateTask(task.id, changes);\n      counts.updated++;\n      if ('deadlineRemindAt' in changes) rec.remindAt = changes.deadlineRemindAt;\n      if ('title' in changes) rec.title = changes.title;\n      if (changes.notes === notes) rec.notesHash = hashString(notes);\n    }\n    rec.dueMs = a.dueMs;\n    rec.remindCfg = remindCfg;\n  };\n\n  const createTask = async (a, projectId) => {\n    const notes = buildNotes(a);\n    const taskId = await PluginAPI.addTask({ title: PLACEHOLDER_TITLE, projectId, notes });\n    // Recorded before the rename so a failure below is repaired by the next sync.\n    const rec = {\n      status: 'linked',\n      taskId,\n      title: PLACEHOLDER_TITLE,\n      dueMs: null,\n      notesHash: hashString(notes),\n      remindAt: null,\n      remindCfg,\n    };\n    state.assignments[a.uid] = rec;\n    linkedTaskIds.add(taskId);\n    const remindAt = computeRemindAt(a.dueMs, settings, now, !isInitialSync);\n    await PluginAPI.updateTask(taskId, { title: a.title, ...deadlineChanges(a.dueMs, remindAt) });\n    rec.title = a.title;\n    rec.dueMs = a.dueMs;\n    rec.remindAt = remindAt;\n    counts.created++;\n  };\n\n  // Latest due first: new tasks are added to the top of a project, so the\n  // assignment due soonest ends up first in the list.\n  assignments.sort((x, y) => y.dueMs - x.dueMs);\n\n  let firstError = null;\n  for (const a of assignments) {\n    try {\n      const rec = state.assignments[a.uid];\n      if (rec && rec.status === 'deleted') continue;\n      const projectId = await resolveProjectId(a);\n      if (!projectId) continue;\n\n      if (rec && rec.status === 'linked') {\n        await updateLinked(a, rec);\n        continue;\n      }\n\n      const existing = findTaskByMarker(a);\n      if (existing) {\n        // Sync data was lost (or another device created it): adopt, don't\n        // duplicate. Title and notes count as the user's own from here on.\n        state.assignments[a.uid] = {\n          status: 'linked',\n          taskId: existing.id,\n          title: a.title,\n          dueMs: existing.deadlineWithTime ?? null,\n          notesHash: hashString(buildNotes(a)),\n          remindAt: existing.deadlineRemindAt ?? null,\n          remindCfg,\n        };\n        linkedTaskIds.add(existing.id);\n        await updateLinked(a, state.assignments[a.uid]);\n        continue;\n      }\n\n      if (settings.skipPastDue && a.dueMs \u003c now) {\n        state.assignments[a.uid] = { status: 'skipped', dueMs: a.dueMs };\n        counts.skippedPastDue++;\n        continue;\n      }\n\n      await createTask(a, projectId);\n    } catch (e) {\n      counts.errors++;\n      if (!firstError) firstError = `\"${a.title}\": ${errMsg(e)}`;\n      PluginAPI.log.err('[canvas-sync] Failed to sync assignment', a.uid, errMsg(e));\n    }\n  }\n\n  const parts = [`${counts.found} assignments in feed`];\n  if (counts.created) parts.push(`${counts.created} added`);\n  if (counts.updated) parts.push(`${counts.updated} updated`);\n  if (counts.projectsCreated) parts.push(`${counts.projectsCreated} course projects created`);\n  if (counts.skippedPastDue) parts.push(`${counts.skippedPastDue} past-due skipped`);\n  if (counts.errors) parts.push(`${counts.errors} failed (first: ${firstError})`);\n  return finish(counts.errors === 0, parts.join(', '));\n};\n\nlet syncPromise = null;\nconst sync = async ({ isManual = false } = {}) => {\n  if (!syncPromise) {\n    syncPromise = runSync()\n      .catch((e) => ({ at: Date.now(), ok: false, message: errMsg(e) }))\n      .finally(() => {\n        syncPromise = null;\n      });\n  }\n  const result = await syncPromise;\n  const c = result.counts || {};\n  if (isManual || !result.ok || c.created || c.updated) {\n    PluginAPI.showSnack({\n      msg: `Canvas sync: ${result.message}`,\n      type: result.ok ? 'SUCCESS' : 'ERROR',\n    });\n  }\n  return result;\n};\n\n// ---------------------------------------------------------------------------\n// Scheduling, UI messages, lifecycle\n// ---------------------------------------------------------------------------\n\nlet intervalId = null;\nlet startupTimeoutId = null;\n\nconst schedule = (settings) => {\n  if (intervalId) clearInterval(intervalId);\n  intervalId = setInterval(() => {\n    sync().catch((e) => PluginAPI.log.err('[canvas-sync] Scheduled sync failed', errMsg(e)));\n  }, settings.syncIntervalMin * 60 * 1000);\n};\n\nconst getStatus = async () => {\n  const [settings, state, feedUrl, projects] = await Promise.all([\n    loadSettings(),\n    loadState(),\n    PluginAPI.getSecret(SECRET_FEED_URL),\n    PluginAPI.getAllProjects(),\n  ]);\n  const titleById = new Map(projects.map((p) => [p.id, p.title]));\n  const courses = Object.entries(state.courses)\n    .map(([key, c]) => ({\n      key,\n      label: c.label,\n      status: c.status,\n      reason: c.reason || null,\n      projectTitle: (c.projectId && titleById.get(c.projectId)) || null,\n    }))\n    .sort((x, y) => String(x.label).localeCompare(String(y.label)));\n  return {\n    host: CANVAS_HOST,\n    hasFeedUrl: !!feedUrl,\n    feedUrlMasked: feedUrl ? maskFeedUrl(feedUrl) : null,\n    settings,\n    lastSync: state.lastSync,\n    isSyncing: !!syncPromise,\n    courses,\n  };\n};\n\nconst handleMessage = async (message) => {\n  const msg = message && typeof message === 'object' ? message : {};\n  switch (msg.type) {\n    case 'getStatus':\n      return getStatus();\n\n    case 'saveSettings': {\n      const settings = sanitizeSettings({ ...(await loadSettings()), ...(msg.settings || {}) });\n      let isNewFeedUrl = false;\n      if (typeof msg.feedUrl === 'string' && msg.feedUrl.trim()) {\n        await PluginAPI.setSecret(SECRET_FEED_URL, normalizeFeedUrl(msg.feedUrl));\n        isNewFeedUrl = true;\n      }\n      await PluginAPI.persistDataSynced(JSON.stringify(settings), SETTINGS_KEY);\n      schedule(settings);\n      if (isNewFeedUrl) await sync({ isManual: true });\n      return getStatus();\n    }\n\n    case 'forgetFeedUrl':\n      await PluginAPI.deleteSecret(SECRET_FEED_URL);\n      return getStatus();\n\n    case 'syncNow':\n      await sync({ isManual: true });\n      return getStatus();\n\n    case 'setCourseStatus': {\n      const state = await loadState();\n      const course = state.courses[msg.key];\n      if (!course) throw new Error('Unknown course');\n      if (msg.status === 'active') {\n        course.status = 'active';\n        if (course.reason === 'project-removed') delete course.projectId; // make a new one\n        delete course.reason;\n      } else {\n        course.status = 'ignored';\n        course.reason = 'user';\n      }\n      await saveState(state);\n      return getStatus();\n    }\n\n    default:\n      throw new Error('Unknown message type: ' + msg.type);\n  }\n};\n\nPluginAPI.onMessage(handleMessage);\n\nconst start = async () => {\n  const settings = await loadSettings();\n  schedule(settings);\n  startupTimeoutId = setTimeout(() => {\n    startupTimeoutId = null;\n    sync().catch((e) => PluginAPI.log.err('[canvas-sync] Startup sync failed', errMsg(e)));\n  }, 5000);\n};\n\nif (typeof PluginAPI.onUnload === 'function') {\n  PluginAPI.onUnload(() => {\n    if (intervalId) clearInterval(intervalId);\n    if (startupTimeoutId) clearTimeout(startupTimeoutId);\n    intervalId = null;\n    startupTimeoutId = null;\n  });\n}\n\nif (typeof PluginAPI.onReady === 'function') {\n  PluginAPI.onReady(start);\n} else {\n  start();\n}\n\n// Test hook: the real PluginAPI has no __test property.\nif (PluginAPI.__test && typeof PluginAPI.__test === 'object') {\n  PluginAPI.__test.exports = {\n    parseIcs,\n    parseIcsDate,\n    toAssignment,\n    computeRemindAt,\n    normalizeFeedUrl,\n    sanitizeSettings,\n    sync,\n    handleMessage,\n  };\n}\n"},{"name":"index.html","text":"\u003c!doctype html>\n\u003chtml lang=\"en\">\n  \u003chead>\n    \u003cmeta charset=\"utf-8\" />\n    \u003cmeta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n    \u003ctitle>Canvas Assignment Sync\u003c/title>\n    \u003cstyle>\n      body {\n        max-width: 760px;\n        margin: 0 auto;\n        padding: 16px;\n      }\n      .card {\n        padding: 16px;\n        margin-bottom: 16px;\n      }\n      .row {\n        display: flex;\n        gap: 8px;\n        align-items: center;\n        flex-wrap: wrap;\n      }\n      .field {\n        display: flex;\n        flex-direction: column;\n        gap: 4px;\n        margin-bottom: 12px;\n      }\n      .field input[type='url'],\n      .field input[type='password'] {\n        width: 100%;\n        box-sizing: border-box;\n      }\n      .check {\n        display: flex;\n        gap: 8px;\n        align-items: center;\n        margin-bottom: 12px;\n      }\n      input[type='number'] {\n        width: 5em;\n      }\n      .status {\n        padding: 10px 12px;\n        border-radius: 6px;\n        margin-top: 12px;\n        border-left: 4px solid var(--divider-color, #888);\n        white-space: pre-wrap;\n      }\n      .status.ok {\n        border-left-color: #2e7d32;\n      }\n      .status.err {\n        border-left-color: #c62828;\n      }\n      table {\n        width: 100%;\n      }\n      td:last-child,\n      th:last-child {\n        text-align: right;\n      }\n      .pill {\n        font-size: 0.8em;\n        padding: 2px 8px;\n        border-radius: 10px;\n        border: 1px solid var(--divider-color, #888);\n      }\n      ol li {\n        margin-bottom: 4px;\n      }\n      h2 {\n        margin-top: 0;\n      }\n    \u003c/style>\n  \u003c/head>\n  \u003cbody>\n    \u003ch1>Canvas Assignment Sync\u003c/h1>\n\n    \u003cdiv class=\"card\">\n      \u003ch2>Calendar Feed\u003c/h2>\n      \u003cp class=\"text-muted\" id=\"feedState\">Loading…\u003c/p>\n      \u003cdiv class=\"field\">\n        \u003clabel for=\"feedUrl\">Paste your Canvas Calendar Feed link\u003c/label>\n        \u003cinput\n          id=\"feedUrl\"\n          type=\"password\"\n          autocomplete=\"off\"\n          spellcheck=\"false\"\n          placeholder=\"https://__CANVAS_HOST__/feeds/calendars/user_….ics\"\n        />\n        \u003csmall class=\"text-muted\">\n          In Canvas: \u003cb>Calendar\u003c/b> → \u003cb>Calendar Feed\u003c/b> (bottom of the right sidebar) → copy\n          the link. It is stored on this computer only, never synced. Treat it like a password.\n        \u003c/small>\n      \u003c/div>\n      \u003cdiv class=\"row\">\n        \u003cbutton class=\"btn-primary\" id=\"saveFeedBtn\">Save link &amp; sync\u003c/button>\n        \u003cbutton class=\"btn-outline\" id=\"forgetBtn\">Forget saved link\u003c/button>\n      \u003c/div>\n    \u003c/div>\n\n    \u003cdiv class=\"card\">\n      \u003ch2>Settings\u003c/h2>\n      \u003clabel class=\"check\">\n        \u003cinput type=\"checkbox\" id=\"remindersEnabled\" />\n        Remind me\n        \u003cinput type=\"number\" id=\"reminderDaysBefore\" min=\"0\" max=\"30\" step=\"1\" />\n        day(s) before each deadline\n      \u003c/label>\n      \u003clabel class=\"check\">\n        \u003cinput type=\"checkbox\" id=\"skipPastDue\" />\n        Don't import assignments that are already past due\n      \u003c/label>\n      \u003clabel class=\"check\">\n        Sync every\n        \u003cinput type=\"number\" id=\"syncIntervalMin\" min=\"15\" max=\"1440\" step=\"5\" />\n        minutes (and on app start)\n      \u003c/label>\n      \u003cdiv class=\"row\">\n        \u003cbutton class=\"btn-primary\" id=\"saveSettingsBtn\">Save settings\u003c/button>\n        \u003cbutton id=\"syncBtn\">Sync now\u003c/button>\n      \u003c/div>\n      \u003cdiv class=\"status\" id=\"status\" hidden>\u003c/div>\n    \u003c/div>\n\n    \u003cdiv class=\"card\">\n      \u003ch2>Courses\u003c/h2>\n      \u003cp class=\"text-muted\" id=\"noCourses\">Courses appear here after the first sync.\u003c/p>\n      \u003ctable id=\"courseTable\" hidden>\n        \u003cthead>\n          \u003ctr>\n            \u003cth>Course\u003c/th>\n            \u003cth>Project\u003c/th>\n            \u003cth>\u003c/th>\n          \u003c/tr>\n        \u003c/thead>\n        \u003ctbody id=\"courseRows\">\u003c/tbody>\n      \u003c/table>\n    \u003c/div>\n\n    \u003cdiv class=\"card\">\n      \u003ch2>Putting courses in a folder\u003c/h2>\n      \u003cp class=\"text-muted\">\n        Plugins cannot create folders, so this step is manual (about once per semester):\n      \u003c/p>\n      \u003col>\n        \u003cli>In the left sidebar, hover over the \u003cb>Projects\u003c/b> heading and click the\n          \u003cb>new folder\u003c/b> icon next to it. Name it e.g. \"Fall 2026\".\u003c/li>\n        \u003cli>Drag each course project into it.\u003c/li>\n        \u003cli>At the end of the semester, archive the course projects. Archived courses stop syncing.\u003c/li>\n      \u003c/ol>\n    \u003c/div>\n\n    \u003cscript>\n      let msgCounter = 0;\n      function sendMessage(message, timeoutMs = 20000) {\n        return new Promise((resolve, reject) => {\n          const messageId = 'canvas-sync-' + Date.now() + '-' + ++msgCounter;\n          const timer = setTimeout(() => {\n            window.removeEventListener('message', onMsg);\n            reject(new Error('Timed out waiting for the plugin'));\n          }, timeoutMs);\n          function onMsg(event) {\n            if (event.source !== window.parent) return;\n            const d = event.data;\n            if (!d || d.messageId !== messageId) return;\n            if (d.type === 'PLUGIN_MESSAGE_RESPONSE') {\n              clearTimeout(timer);\n              window.removeEventListener('message', onMsg);\n              resolve(d.result);\n            } else if (d.type === 'PLUGIN_MESSAGE_ERROR') {\n              clearTimeout(timer);\n              window.removeEventListener('message', onMsg);\n              reject(new Error(d.error || 'Plugin error'));\n            }\n          }\n          window.addEventListener('message', onMsg);\n          window.parent.postMessage({ type: 'PLUGIN_MESSAGE', message, messageId }, '*');\n        });\n      }\n\n      const $ = (id) => document.getElementById(id);\n\n      function showStatus(text, ok) {\n        const el = $('status');\n        el.hidden = false;\n        el.textContent = text;\n        el.className = 'status ' + (ok ? 'ok' : 'err');\n      }\n\n      function setBusy(isBusy) {\n        for (const id of ['saveFeedBtn', 'forgetBtn', 'saveSettingsBtn', 'syncBtn']) {\n          $(id).disabled = isBusy;\n        }\n      }\n\n      function render(s) {\n        $('feedState').textContent = s.hasFeedUrl\n          ? 'Saved: ' + s.feedUrlMasked\n          : 'No feed link saved yet. This build accepts links on ' + s.host + '.';\n        $('remindersEnabled').checked = s.settings.remindersEnabled;\n        $('reminderDaysBefore').value = s.settings.reminderDaysBefore;\n        $('skipPastDue').checked = s.settings.skipPastDue;\n        $('syncIntervalMin').value = s.settings.syncIntervalMin;\n\n        if (s.lastSync) {\n          const when = new Date(s.lastSync.at).toLocaleString();\n          showStatus('Last sync ' + when + ': ' + s.lastSync.message, s.lastSync.ok);\n        }\n\n        const rows = $('courseRows');\n        rows.textContent = '';\n        $('noCourses').hidden = s.courses.length > 0;\n        $('courseTable').hidden = s.courses.length === 0;\n        for (const c of s.courses) {\n          const tr = document.createElement('tr');\n          const tdName = document.createElement('td');\n          tdName.textContent = c.label;\n          const tdProject = document.createElement('td');\n          if (c.status === 'active') {\n            tdProject.textContent = c.projectTitle || '—';\n          } else {\n            const pill = document.createElement('span');\n            pill.className = 'pill';\n            pill.textContent =\n              c.reason === 'project-removed' ? 'paused: project archived/deleted' : 'paused';\n            tdProject.appendChild(pill);\n          }\n          const tdBtn = document.createElement('td');\n          const btn = document.createElement('button');\n          btn.className = 'btn-outline';\n          btn.textContent = c.status === 'active' ? 'Pause' : 'Resume';\n          btn.addEventListener('click', () =>\n            run(() =>\n              sendMessage({\n                type: 'setCourseStatus',\n                key: c.key,\n                status: c.status === 'active' ? 'ignored' : 'active',\n              }),\n            ),\n          );\n          tdBtn.appendChild(btn);\n          tr.append(tdName, tdProject, tdBtn);\n          rows.appendChild(tr);\n        }\n      }\n\n      async function run(fn) {\n        setBusy(true);\n        try {\n          render(await fn());\n        } catch (e) {\n          showStatus(e.message || String(e), false);\n        } finally {\n          setBusy(false);\n        }\n      }\n\n      function readSettings() {\n        return {\n          remindersEnabled: $('remindersEnabled').checked,\n          reminderDaysBefore: Number($('reminderDaysBefore').value),\n          skipPastDue: $('skipPastDue').checked,\n          syncIntervalMin: Number($('syncIntervalMin').value),\n        };\n      }\n\n      $('saveFeedBtn').addEventListener('click', () => {\n        const feedUrl = $('feedUrl').value.trim();\n        if (!feedUrl) {\n          showStatus('Paste the Calendar Feed link first.', false);\n          return;\n        }\n        showStatus('Saving and syncing…', true);\n        run(async () => {\n          const s = await sendMessage(\n            { type: 'saveSettings', settings: readSettings(), feedUrl },\n            90000,\n          );\n          $('feedUrl').value = '';\n          return s;\n        });\n      });\n\n      $('forgetBtn').addEventListener('click', () =>\n        run(() => sendMessage({ type: 'forgetFeedUrl' })),\n      );\n\n      $('saveSettingsBtn').addEventListener('click', () =>\n        run(() => sendMessage({ type: 'saveSettings', settings: readSettings() })),\n      );\n\n      $('syncBtn').addEventListener('click', () => {\n        showStatus('Syncing…', true);\n        run(() => sendMessage({ type: 'syncNow' }, 90000));\n      });\n\n      run(() => sendMessage({ type: 'getStatus' }));\n    \u003c/script>\n  \u003c/body>\n\u003c/html>\n"},{"name":"icon.svg","text":"\u003csvg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"currentColor\">\u003cpath d=\"M12 3 1 9l11 6 9-4.91V17h2V9L12 3zm-6.82 9.18v4L12 20l6.82-3.82v-4L12 16l-6.82-3.82z\"/>\u003c/svg>\n"}];
+
+      function makePluginZip(input) {
+        const host = parseCanvasHost(input);
+        return {
+          host,
+          filename: 'canvas-assignment-sync-' + host + '.zip',
+          bytes: buildPluginZip(PLUGIN_FILES, host),
+        };
+      }
+    </script>
+    <script>
+      const form = document.getElementById('form');
+      const result = document.getElementById('result');
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        try {
+          const zip = makePluginZip(document.getElementById('link').value);
+          const url = URL.createObjectURL(new Blob([zip.bytes], { type: 'application/zip' }));
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = zip.filename;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          setTimeout(() => URL.revokeObjectURL(url), 10000);
+          result.className = 'result ok';
+          result.textContent = 'Downloaded ' + zip.filename + ', made for ' + zip.host + '.';
+        } catch (e) {
+          result.className = 'result err';
+          result.textContent = e.message;
+        }
+      });
+    </script>
+  </body>
+</html>

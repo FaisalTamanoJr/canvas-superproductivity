@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Canvas Assignment Sync</title>
+    <style>
+      body {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 16px;
+      }
+      .card {
+        padding: 16px;
+        margin-bottom: 16px;
+      }
+      .row {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        margin-bottom: 12px;
+      }
+      .field input[type='url'],
+      .field input[type='password'] {
+        width: 100%;
+        box-sizing: border-box;
+      }
+      .check {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+      input[type='number'] {
+        width: 5em;
+      }
+      .status {
+        padding: 10px 12px;
+        border-radius: 6px;
+        margin-top: 12px;
+        border-left: 4px solid var(--divider-color, #888);
+        white-space: pre-wrap;
+      }
+      .status.ok {
+        border-left-color: #2e7d32;
+      }
+      .status.err {
+        border-left-color: #c62828;
+      }
+      table {
+        width: 100%;
+      }
+      td:last-child,
+      th:last-child {
+        text-align: right;
+      }
+      .pill {
+        font-size: 0.8em;
+        padding: 2px 8px;
+        border-radius: 10px;
+        border: 1px solid var(--divider-color, #888);
+      }
+      ol li {
+        margin-bottom: 4px;
+      }
+      h2 {
+        margin-top: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Canvas Assignment Sync</h1>
+
+    <div class="card">
+      <h2>Calendar Feed</h2>
+      <p class="text-muted" id="feedState">Loading…</p>
+      <div class="field">
+        <label for="feedUrl">Paste your Canvas Calendar Feed link</label>
+        <input
+          id="feedUrl"
+          type="password"
+          autocomplete="off"
+          spellcheck="false"
+          placeholder="https://__CANVAS_HOST__/feeds/calendars/user_….ics"
+        />
+        <small class="text-muted">
+          In Canvas: <b>Calendar</b> → <b>Calendar Feed</b> (bottom of the right sidebar) → copy
+          the link. It is stored on this computer only, never synced. Treat it like a password.
+        </small>
+      </div>
+      <div class="row">
+        <button class="btn-primary" id="saveFeedBtn">Save link &amp; sync</button>
+        <button class="btn-outline" id="forgetBtn">Forget saved link</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Settings</h2>
+      <label class="check">
+        <input type="checkbox" id="remindersEnabled" />
+        Remind me
+        <input type="number" id="reminderDaysBefore" min="0" max="30" step="1" />
+        day(s) before each deadline
+      </label>
+      <label class="check">
+        <input type="checkbox" id="skipPastDue" />
+        Don't import assignments that are already past due
+      </label>
+      <label class="check">
+        Sync every
+        <input type="number" id="syncIntervalMin" min="15" max="1440" step="5" />
+        minutes (and on app start)
+      </label>
+      <div class="row">
+        <button class="btn-primary" id="saveSettingsBtn">Save settings</button>
+        <button id="syncBtn">Sync now</button>
+      </div>
+      <div class="status" id="status" hidden></div>
+    </div>
+
+    <div class="card">
+      <h2>Courses</h2>
+      <p class="text-muted" id="noCourses">Courses appear here after the first sync.</p>
+      <table id="courseTable" hidden>
+        <thead>
+          <tr>
+            <th>Course</th>
+            <th>Project</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="courseRows"></tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>Putting courses in a folder</h2>
+      <p class="text-muted">
+        Plugins cannot create folders, so this step is manual (about once per semester):
+      </p>
+      <ol>
+        <li>In the left sidebar, hover over the <b>Projects</b> heading and click the
+          <b>new folder</b> icon next to it. Name it e.g. "Fall 2026".</li>
+        <li>Drag each course project into it.</li>
+        <li>At the end of the semester, archive the course projects. Archived courses stop syncing.</li>
+      </ol>
+    </div>
+
+    <script>
+      let msgCounter = 0;
+      function sendMessage(message, timeoutMs = 20000) {
+        return new Promise((resolve, reject) => {
+          const messageId = 'canvas-sync-' + Date.now() + '-' + ++msgCounter;
+          const timer = setTimeout(() => {
+            window.removeEventListener('message', onMsg);
+            reject(new Error('Timed out waiting for the plugin'));
+          }, timeoutMs);
+          function onMsg(event) {
+            if (event.source !== window.parent) return;
+            const d = event.data;
+            if (!d || d.messageId !== messageId) return;
+            if (d.type === 'PLUGIN_MESSAGE_RESPONSE') {
+              clearTimeout(timer);
+              window.removeEventListener('message', onMsg);
+              resolve(d.result);
+            } else if (d.type === 'PLUGIN_MESSAGE_ERROR') {
+              clearTimeout(timer);
+              window.removeEventListener('message', onMsg);
+              reject(new Error(d.error || 'Plugin error'));
+            }
+          }
+          window.addEventListener('message', onMsg);
+          window.parent.postMessage({ type: 'PLUGIN_MESSAGE', message, messageId }, '*');
+        });
+      }
+
+      const $ = (id) => document.getElementById(id);
+
+      function showStatus(text, ok) {
+        const el = $('status');
+        el.hidden = false;
+        el.textContent = text;
+        el.className = 'status ' + (ok ? 'ok' : 'err');
+      }
+
+      function setBusy(isBusy) {
+        for (const id of ['saveFeedBtn', 'forgetBtn', 'saveSettingsBtn', 'syncBtn']) {
+          $(id).disabled = isBusy;
+        }
+      }
+
+      function render(s) {
+        $('feedState').textContent = s.hasFeedUrl
+          ? 'Saved: ' + s.feedUrlMasked
+          : 'No feed link saved yet. This build accepts links on ' + s.host + '.';
+        $('remindersEnabled').checked = s.settings.remindersEnabled;
+        $('reminderDaysBefore').value = s.settings.reminderDaysBefore;
+        $('skipPastDue').checked = s.settings.skipPastDue;
+        $('syncIntervalMin').value = s.settings.syncIntervalMin;
+
+        if (s.lastSync) {
+          const when = new Date(s.lastSync.at).toLocaleString();
+          showStatus('Last sync ' + when + ': ' + s.lastSync.message, s.lastSync.ok);
+        }
+
+        const rows = $('courseRows');
+        rows.textContent = '';
+        $('noCourses').hidden = s.courses.length > 0;
+        $('courseTable').hidden = s.courses.length === 0;
+        for (const c of s.courses) {
+          const tr = document.createElement('tr');
+          const tdName = document.createElement('td');
+          tdName.textContent = c.label;
+          const tdProject = document.createElement('td');
+          if (c.status === 'active') {
+            tdProject.textContent = c.projectTitle || '—';
+          } else {
+            const pill = document.createElement('span');
+            pill.className = 'pill';
+            pill.textContent =
+              c.reason === 'project-removed' ? 'paused: project archived/deleted' : 'paused';
+            tdProject.appendChild(pill);
+          }
+          const tdBtn = document.createElement('td');
+          const btn = document.createElement('button');
+          btn.className = 'btn-outline';
+          btn.textContent = c.status === 'active' ? 'Pause' : 'Resume';
+          btn.addEventListener('click', () =>
+            run(() =>
+              sendMessage({
+                type: 'setCourseStatus',
+                key: c.key,
+                status: c.status === 'active' ? 'ignored' : 'active',
+              }),
+            ),
+          );
+          tdBtn.appendChild(btn);
+          tr.append(tdName, tdProject, tdBtn);
+          rows.appendChild(tr);
+        }
+      }
+
+      async function run(fn) {
+        setBusy(true);
+        try {
+          render(await fn());
+        } catch (e) {
+          showStatus(e.message || String(e), false);
+        } finally {
+          setBusy(false);
+        }
+      }
+
+      function readSettings() {
+        return {
+          remindersEnabled: $('remindersEnabled').checked,
+          reminderDaysBefore: Number($('reminderDaysBefore').value),
+          skipPastDue: $('skipPastDue').checked,
+          syncIntervalMin: Number($('syncIntervalMin').value),
+        };
+      }
+
+      $('saveFeedBtn').addEventListener('click', () => {
+        const feedUrl = $('feedUrl').value.trim();
+        if (!feedUrl) {
+          showStatus('Paste the Calendar Feed link first.', false);
+          return;
+        }
+        showStatus('Saving and syncing…', true);
+        run(async () => {
+          const s = await sendMessage(
+            { type: 'saveSettings', settings: readSettings(), feedUrl },
+            90000,
+          );
+          $('feedUrl').value = '';
+          return s;
+        });
+      });
+
+      $('forgetBtn').addEventListener('click', () =>
+        run(() => sendMessage({ type: 'forgetFeedUrl' })),
+      );
+
+      $('saveSettingsBtn').addEventListener('click', () =>
+        run(() => sendMessage({ type: 'saveSettings', settings: readSettings() })),
+      );
+
+      $('syncBtn').addEventListener('click', () => {
+        showStatus('Syncing…', true);
+        run(() => sendMessage({ type: 'syncNow' }, 90000));
+      });
+
+      run(() => sendMessage({ type: 'getStatus' }));
+    </script>
+  </body>
+</html>

@@ -1,0 +1,28 @@
+{
+  "id": "canvas-assignment-sync",
+  "manifestVersion": 1,
+  "name": "Canvas Assignment Sync",
+  "version": "1.0.0",
+  "minSupVersion": "19.0.0",
+  "description": "Imports Canvas assignments from your Canvas Calendar Feed: one project per course, one task per assignment, with the due date as deadline and a reminder before it.",
+  "author": "",
+  "hooks": [],
+  "permissions": [
+    "http",
+    "getTasks",
+    "getArchivedTasks",
+    "addTask",
+    "updateTask",
+    "getAllProjects",
+    "addProject",
+    "persistDataSynced",
+    "loadSyncedData",
+    "onMessage",
+    "showSnack"
+  ],
+  "allowedHosts": ["__CANVAS_HOST__"],
+  "iFrame": true,
+  "isSkipMenuEntry": false,
+  "type": "standard",
+  "icon": "icon.svg"
+}

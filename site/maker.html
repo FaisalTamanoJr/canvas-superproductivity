@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Canvas Plugin Maker</title>
+    <meta
+      name="description"
+      content="Make the Canvas Assignment Sync plugin for Super Productivity, set up for your school."
+    />
+    <style>
+      :root {
+        --bg: #f6f7f9;
+        --card: #ffffff;
+        --text: #1d2330;
+        --muted: #5b6475;
+        --border: #dfe3ea;
+        --accent: #2f6fde;
+        --accent-text: #ffffff;
+        --ok: #1f7a3a;
+        --err: #b3261e;
+        --code-bg: #eef1f6;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #14171d;
+          --card: #1c2028;
+          --text: #e6e9ef;
+          --muted: #a0a8b8;
+          --border: #2e3440;
+          --accent: #6f9df2;
+          --accent-text: #0d1220;
+          --ok: #6fcf8a;
+          --err: #f2857c;
+          --code-bg: #262b35;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font: 16px/1.55 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      }
+      main {
+        max-width: 640px;
+        margin: 0 auto;
+        padding: 40px 16px 64px;
+      }
+      h1 {
+        font-size: 1.7rem;
+        line-height: 1.25;
+        margin: 0 0 8px;
+      }
+      .lead {
+        color: var(--muted);
+        margin: 0 0 28px;
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+      }
+      h2 {
+        font-size: 1.05rem;
+        margin: 0 0 12px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      .num {
+        flex: none;
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: var(--accent);
+        color: var(--accent-text);
+        font-size: 0.85rem;
+        display: grid;
+        place-items: center;
+      }
+      ol {
+        margin: 0;
+        padding-left: 22px;
+      }
+      li {
+        margin-bottom: 6px;
+      }
+      label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 6px;
+      }
+      input {
+        width: 100%;
+        font: inherit;
+        padding: 10px 12px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: var(--bg);
+        color: var(--text);
+      }
+      input:focus {
+        outline: 2px solid var(--accent);
+        outline-offset: 1px;
+      }
+      button {
+        margin-top: 12px;
+        font: inherit;
+        font-weight: 600;
+        padding: 10px 18px;
+        border: 0;
+        border-radius: 8px;
+        background: var(--accent);
+        color: var(--accent-text);
+        cursor: pointer;
+      }
+      button:hover {
+        filter: brightness(1.08);
+      }
+      .hint,
+      .note {
+        color: var(--muted);
+        font-size: 0.9rem;
+        margin: 8px 0 0;
+      }
+      .result {
+        margin-top: 14px;
+        font-weight: 600;
+        min-height: 1.5em;
+      }
+      .result.ok {
+        color: var(--ok);
+      }
+      .result.err {
+        color: var(--err);
+      }
+      code {
+        background: var(--code-bg);
+        padding: 1px 6px;
+        border-radius: 4px;
+        font-size: 0.92em;
+        overflow-wrap: anywhere;
+      }
+      footer {
+        color: var(--muted);
+        font-size: 0.85rem;
+        text-align: center;
+      }
+      a {
+        color: var(--accent);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Canvas → Super Productivity</h1>
+      <p class="lead">
+        Make the Canvas Assignment Sync plugin for your school. It copies your Canvas
+        assignments into Super Productivity as tasks, with deadlines and reminders.
+      </p>
+
+      <section class="card">
+        <h2><span class="num">1</span> Copy your Calendar Feed link</h2>
+        <ol>
+          <li>Open Canvas and click <b>Calendar</b> in the left menu.</li>
+          <li>Click <b>Calendar Feed</b>, at the bottom of the right side.</li>
+          <li>Copy the link it shows.</li>
+        </ol>
+      </section>
+
+      <section class="card">
+        <h2><span class="num">2</span> Make your plugin</h2>
+        <form id="form">
+          <label for="link">Calendar Feed link</label>
+          <input
+            id="link"
+            type="text"
+            inputmode="url"
+            autocomplete="off"
+            spellcheck="false"
+            placeholder="https://canvas.myschool.edu/feeds/calendars/user_….ics"
+          />
+          <p class="hint">
+            Your Canvas address (like <code>canvas.myschool.edu</code>) works too.
+          </p>
+          <button type="submit">Download plugin</button>
+          <p class="result" id="result" role="status"></p>
+        </form>
+        <p class="note">
+          This page runs entirely in your browser. Your link is not sent or saved: only the
+          address of your school's Canvas goes into the plugin file.
+        </p>
+      </section>
+
+      <section class="card">
+        <h2><span class="num">3</span> Install it</h2>
+        <ol>
+          <li>Open the Super Productivity desktop app and go to <b>Settings → Plugins</b>.</li>
+          <li>
+            Under <b>Install Plugin</b>, click <b>Choose Plugin File</b>, pick the file you just
+            downloaded, and confirm.
+          </li>
+          <li>
+            Open <b>Canvas Assignment Sync</b> in the left menu, paste your Calendar Feed link
+            again, and click <b>Save link &amp; sync</b>.
+          </li>
+        </ol>
+      </section>
+
+      <footer>Canvas Assignment Sync v__PLUGIN_VERSION__</footer>
+    </main>
+
+    <script id="core">
+      /*__SHARED_CODE__*/
+      /*__PLUGIN_FILES__*/
+
+      function makePluginZip(input) {
+        const host = parseCanvasHost(input);
+        return {
+          host,
+          filename: 'canvas-assignment-sync-' + host + '.zip',
+          bytes: buildPluginZip(PLUGIN_FILES, host),
+        };
+      }
+    </script>
+    <script>
+      const form = document.getElementById('form');
+      const result = document.getElementById('result');
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        try {
+          const zip = makePluginZip(document.getElementById('link').value);
+          const url = URL.createObjectURL(new Blob([zip.bytes], { type: 'application/zip' }));
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = zip.filename;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          setTimeout(() => URL.revokeObjectURL(url), 10000);
+          result.className = 'result ok';
+          result.textContent = 'Downloaded ' + zip.filename + ', made for ' + zip.host + '.';
+        } catch (e) {
+          result.className = 'result err';
+          result.textContent = e.message;
+        }
+      });
+    </script>
+  </body>
+</html>
