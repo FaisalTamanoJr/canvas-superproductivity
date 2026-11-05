@@ -17,7 +17,7 @@ automatically, with their due dates and a reminder before each one is due.
 ## Install
 
 1. **Make your plugin:** go to the
-   **[Canvas Plugin Maker](https://YOUR-GITHUB-USERNAME.github.io/canvas-superproductivity/)**,
+   **[Canvas Plugin Maker](https://faisaltamanojr.github.io/canvas-superproductivity/)**,
    paste your Canvas Calendar Feed link, and click **Download plugin**.
 
    To find the link, open Canvas, click **Calendar**, then **Calendar Feed** (bottom
@@ -64,7 +64,7 @@ The plugin page shows the result of the last sync. If something's wrong:
 | "0 assignments in feed" | Check that you copied the **Calendar Feed** link, not the address of the Calendar page. |
 | No reminders | Keep Super Productivity open, and check that reminders are on in its settings. |
 
-Still stuck? [Open an issue](https://github.com/YOUR-GITHUB-USERNAME/canvas-superproductivity/issues).
+Still stuck? [Open an issue](https://github.com/FaisalTamanoJr/canvas-superproductivity/issues).
 
 ## For developers
 
